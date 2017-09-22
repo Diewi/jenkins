@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<jenkins.model.JenkinsLocationConfiguration>
+  <adminAddress>admin@diewald-net.com</adminAddress>
+  <jenkinsUrl>http://diewald-net.com/jenkins/</jenkinsUrl>
+</jenkins.model.JenkinsLocationConfiguration>
