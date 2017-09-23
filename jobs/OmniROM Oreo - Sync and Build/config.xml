@@ -78,6 +78,30 @@
 	TYPE=&quot;&quot;
 fi
 
+cd /mnt/android/omnio/
+. build/envsetup.sh
+
+### Sync
+repo sync
+
+### Apply omni changes from gerrit
+for topic in OMNI_PICK_TOPICS; do
+	repopick -t topic
+done
+
+for num in OMNI_PICK_NUMBER; do
+	repopick -t num
+done
+
+### Apply choose-a changes from gerrit
+for topic in OMNI_PICK_TOPICS; do
+	~/home/tools/repopickc.py -t topic
+done
+
+for num in OMNI_PICK_NUMBER; do
+	~/home/tools/repopickc.py number
+done
+
 ../tools/buildomni.sh ${DEVICE} &quot;&quot; ${ROM_BUILDTYPE}
 </command>
     </hudson.tasks.Shell>
