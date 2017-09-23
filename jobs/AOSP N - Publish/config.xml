@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>DEVICE</name>
+          <description></description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>castor</string>
+              <string>castor_windy</string>
+              <string>honami</string>
+              <string>sirius</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>BUILD_TYPE</name>
+          <description></description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>experimental</string>
+              <string>testing</string>
+              <string>stable</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <jdk>(System)</jdk>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>export PUB_DIR=&quot;/mnt/home/files/public/AOSP&quot;
+export PRODUCT_DIR=&quot;/mnt/android/output/8974-sony/target/product&quot;
+export BUILD_DATE=&quot;$( date +%Y-%m-%d_%H%M )&quot;
+
+mkdir -p &quot;${PUB_DIR}/${DEVICE}/${BUILD_TYPE}&quot;
+
+# Identify the latest built zip file for the current device.
+ZIP_FILES_ORDERED=($( ls -1 -t &quot;${PRODUCT_DIR}/${DEVICE}/&quot;aosp*ota*.zip ))
+latest_zip_md5=&quot;latest_zip_md5_is_not_set&quot;
+if [ -n &quot;ZIP_FILES_ORDERED&quot; ]; then
+    latest_zip=${ZIP_FILES_ORDERED[0]}
+    $(md5sum &quot;${latest_zip}&quot; &gt; &quot;${latest_zip}&quot;.md5sum)
+    latest_zip_md5=$( cat &quot;${latest_zip}.md5sum&quot; | sed &apos;s/\(.*\)  ${latest_zip}/\1/&apos; )
+fi
+
+# Identify the latest published zip file for the current device.
+pub_latest_zip=&quot;&quot;
+pub_latest_md5=&quot;pub_latest_md5_is_not_set&quot;
+if [ $( ls -1 -t &quot;${PUB_DIR}/${DEVICE}/${BUILD_TYPE}/&quot;aosp*ota*.zip 2&gt; /dev/null ) ]; then
+    pub_latest_zip=$( ls -1 -t &quot;${PUB_DIR}/${DEVICE}/${BUILD_TYPE}/&quot;aosp*ota*.zip 2&gt; /dev/null )
+    pub_latest_md5=$( cat &quot;${pub_latest_zip}.md5sum&quot; | sed &apos;s/\(.*\)  ${pub_latest_zip}/\1/&apos; )
+fi
+    
+# Use md5 to determine whether latest build has ben already pulished.
+if [ &quot;$latest_zip_md5&quot; != &quot;$pub_latest_md5&quot; ]; then
+    # Move &quot;old&quot; zips to archive and create archive folder if non-existent.
+    if [ -f &quot;${PUB_DIR}/${DEVICE}/${BUILD_TYPE}/&quot;aosp*ota* ]; then
+        if [ ! -d &quot;${PUB_DIR}/${DEVICE}/${BUILD_TYPE}/ARCHIVE&quot; ]; then
+            mkdir -p &quot;${PUB_DIR}/${DEVICE}/${BUILD_TYPE}/ARCHIVE&quot;
+        fi
+        mv &quot;${PUB_DIR}/${DEVICE}/${BUILD_TYPE}/&quot;aosp*ota* &quot;${PUB_DIR}/${DEVICE}/${BUILD_TYPE}/ARCHIVE&quot;
+    fi
+
+    # Copy the latest build.
+    cp &quot;${latest_zip}&quot; &quot;${PUB_DIR}/${DEVICE}/${BUILD_TYPE}&quot;
+    cp &quot;${latest_zip}&quot;.md5sum &quot;${PUB_DIR}/${DEVICE}/${BUILD_TYPE}/&quot;
+fi
+
+</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+</project>

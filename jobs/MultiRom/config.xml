@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>DEVICE</name>
+          <description></description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>sirius</string>
+              <string>castor</string>
+              <string>castor_windy</string>
+              <string>honami</string>
+              <string>leo</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>DEVICE_VERSION</name>
+          <description></description>
+          <defaultValue>e</defaultValue>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <jdk>Icedtea 8 - Binary version</jdk>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>export AND_PATH=&quot;/mnt/android&quot;
+export OMNI_PATH=&quot;${AND_PATH}/omni_mrom&quot;
+export OUT_DIR=&quot;${AND_PATH}/output/omni_mrom&quot;
+
+#if [ ! -d &quot;${OUT_DIR}/target/product/${DEVICE}/recovery/root/etc/&quot; ]; then
+#    mkdir -p &quot;${OUT_DIR}/target/product/${DEVICE}/recovery/root/etc/&quot;
+#fi
+#cp &quot;${OMNI_PATH}/device/sony/${PLATFORM}/rootdir/twrp.fstab&quot; &quot;${OUT_DIR}/target/product/${DEVICE}/recovery/root/etc/&quot;
+
+</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>export BIN_DIR=/mnt/android/tmp/mrom_bin
+export MR_OUT_DIR=/mnt/android/output/omni_mrom/target/product/${DEVICE}
+
+
+# Cleanup to avoid issues during the next build
+rm -rf ${MR_OUT_DIR}/
+
+/mnt/android/multirom/buildmrom.sh ${DEVICE} &quot;${DEVICE_VERSION}&quot;
+
+</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <hudson.tasks.Mailer plugin="mailer@1.20">
+      <recipients>diewald@diewald-net.com</recipients>
+      <dontNotifyEveryUnstableBuild>false</dontNotifyEveryUnstableBuild>
+      <sendToIndividuals>false</sendToIndividuals>
+    </hudson.tasks.Mailer>
+  </publishers>
+  <buildWrappers/>
+</project>

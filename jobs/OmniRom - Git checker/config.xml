@@ -1,0 +1,141 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.StringParameterDefinition>
+          <name>GIT_BRANCH</name>
+          <description></description>
+          <defaultValue>android-6.0</defaultValue>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@2.4.4">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <name>lp5.1</name>
+        <refspec>+refs/heads/lp5.1:refs/remotes/origin/lp5.1</refspec>
+        <url>https://github.com/SlimRoms/vendor_slim.git</url>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>**</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <submoduleCfg class="list"/>
+    <extensions>
+      <hudson.plugins.git.extensions.impl.RelativeTargetDirectory>
+        <relativeTargetDir>vendor_omni</relativeTargetDir>
+      </hudson.plugins.git.extensions.impl.RelativeTargetDirectory>
+    </extensions>
+  </scm>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>#!/bin/sh
+
+export LAST_CHECKED_COMMIT=0
+export LAST_CHECKED_COMMIT_FILE=&quot;${WORKSPACE}/last_checked_commit&quot;
+
+if [ -f &quot;${WORKSPACE}/BUILD_TYPE.env&quot; ]; then
+    rm &quot;${WORKSPACE}/BUILD_TYPE.env&quot;
+fi
+cd &quot;${WORKSPACE}/vendor_slim&quot;
+
+if [ -f &quot;${LAST_CHECKED_COMMIT_FILE}&quot; ]; then
+   LAST_CHECKED_COMMIT=$( cat &quot;${LAST_CHECKED_COMMIT_FILE}&quot; )
+fi
+# Store the latest commit hash from this run.
+HEAD_COMMIT=$( git show-ref --head --dereference ${GIT_BRANCH} | grep refs/remotes/origin/${GIT_BRANCH} | sed &apos;s/\(.*\) \(.*\)/\1/&apos; )
+echo &quot;${HEAD_COMMIT}&quot; &gt; &quot;${LAST_CHECKED_COMMIT_FILE}&quot;
+
+if [ &quot;${LAST_CHECKED_COMMIT}&quot; != 0 ] &amp;&amp; [ &quot;${LAST_CHECKED_COMMIT}&quot; != &quot;${HEAD_COMMIT}&quot; ]; then
+    GIT_LOG=$( git diff ${LAST_CHECKED_COMMIT}..${HEAD_COMMIT} config/common.mk )
+
+	echo &quot;Test&quot;
+    MAJOR_VER_CHANGE=$( echo &quot;${GIT_LOG}&quot; | grep &apos;+PRODUCT_VERSION_MAJOR&apos; )
+    echo &quot;Major: ${MAJOR_VER_CHANGE}&quot;
+    MINOR_VER_CHANGE=$( echo &quot;${GIT_LOG}&quot; | grep &apos;+PRODUCT_VERSION_MINOR&apos; )
+    MAINT_VER_CHANGE=$( echo &quot;${GIT_LOG}&quot; | grep &apos;+PRODUCT_VERSION_MAINTENANCE&apos; )
+    echo &quot;Maint: ${MAINT_VER_CHANGE}&quot;
+    
+    STABLE_COND_BUILD=$( echo &quot;{$GIT_LOG}&quot; | grep &apos;+PRODUCT_VERSION_MINOR = build&apos; )
+    STABLE_COND_MAINT=$( echo &quot;{$GIT_LOG}&quot; | grep &apos;+PRODUCT_VERSION_MAINTENANCE = [1-9]*\.0&apos; )
+    STABLE_COND_STABLE=$( echo &quot;{$GIT_LOG}&quot; | grep &apos;+PRODUCT_VERSION_MINOR = stable&apos; ) 
+    MARKED_STABLE= [ -n $STABLE_COND_MAINT ]
+
+    if [ -n &quot;${MAJOR_VER_CHANGE}&quot; ] || [ -n &quot;${MINOR_VER_CHANGE}&quot; ] || [ -n &quot;${MAINT_VER_CHANGE}&quot; ]; then 
+    	if [ $MARKED_STABLE ]; then
+        	echo $&apos;BUILD_TYPE=Stable&apos; &gt; &quot;${WORKSPACE}/BUILD_TYPE.env&quot;
+        else
+            echo $&apos;BUILD_TYPE=Testing&apos; &gt; &quot;${WORKSPACE}/BUILD_TYPE.env&quot;
+        fi
+    
+        echo $&apos;DO_SYNC=true&apos; &gt;&gt; &quot;${WORKSPACE}/BUILD_TYPE.env&quot;
+    fi
+fi
+
+exit 0</command>
+    </hudson.tasks.Shell>
+    <hudson.plugins.parameterizedtrigger.TriggerBuilder plugin="parameterized-trigger@2.30">
+      <configs>
+        <hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+          <configs>
+            <hudson.plugins.parameterizedtrigger.FileBuildParameters>
+              <propertiesFile>/var/lib/jenkins/home/jobs/OmniRom - Git checker/workspace/BUILD_TYPE.env</propertiesFile>
+              <failTriggerOnMissing>true</failTriggerOnMissing>
+              <useMatrixChild>false</useMatrixChild>
+              <onlyExactRuns>false</onlyExactRuns>
+            </hudson.plugins.parameterizedtrigger.FileBuildParameters>
+          </configs>
+          <projects>OmniRom - BuildAll</projects>
+          <condition>ALWAYS</condition>
+          <triggerWithNoParameters>false</triggerWithNoParameters>
+          <block>
+            <buildStepFailureThreshold>
+              <name>FAILURE</name>
+              <ordinal>2</ordinal>
+              <color>RED</color>
+              <completeBuild>true</completeBuild>
+            </buildStepFailureThreshold>
+            <unstableThreshold>
+              <name>UNSTABLE</name>
+              <ordinal>1</ordinal>
+              <color>YELLOW</color>
+              <completeBuild>true</completeBuild>
+            </unstableThreshold>
+            <failureThreshold>
+              <name>FAILURE</name>
+              <ordinal>2</ordinal>
+              <color>RED</color>
+              <completeBuild>true</completeBuild>
+            </failureThreshold>
+          </block>
+          <buildAllNodesWithLabel>false</buildAllNodesWithLabel>
+        </hudson.plugins.parameterizedtrigger.BlockableBuildTriggerConfig>
+      </configs>
+    </hudson.plugins.parameterizedtrigger.TriggerBuilder>
+  </builders>
+  <publishers/>
+  <buildWrappers>
+    <hudson.plugins.locksandlatches.LockWrapper plugin="locks-and-latches@0.6">
+      <locks>
+        <hudson.plugins.locksandlatches.LockWrapper_-LockWaitConfig>
+          <name>SlimRom Source Tree</name>
+        </hudson.plugins.locksandlatches.LockWrapper_-LockWaitConfig>
+      </locks>
+    </hudson.plugins.locksandlatches.LockWrapper>
+  </buildWrappers>
+</project>

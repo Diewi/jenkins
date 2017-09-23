@@ -1,0 +1,171 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>DEVICE</name>
+          <description></description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>castor</string>
+              <string>castor_windy</string>
+              <string>honami</string>
+              <string>leo</string>
+              <string>sirius</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.ChoiceParameterDefinition>
+          <name>STAGE</name>
+          <description></description>
+          <choices class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>experimental</string>
+              <string>stable</string>
+            </a>
+          </choices>
+        </hudson.model.ChoiceParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>VERSION_MULTIROM</name>
+          <description></description>
+          <defaultValue>33</defaultValue>
+        </hudson.model.StringParameterDefinition>
+        <hudson.model.StringParameterDefinition>
+          <name>VERSION_MULTIROM_DEVICE</name>
+          <description></description>
+          <defaultValue>a</defaultValue>
+        </hudson.model.StringParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <jdk>(System)</jdk>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>export PUB_DIR=&quot;/mnt/home/files/public/MultiRom&quot;
+export PRODUCT_DIR=&quot;/mnt/android/output/omni_mrom/target/product&quot;
+export TOOLS_DIR=&quot;/mnt/android/multirom&quot;
+export BUILD_DATE=&quot;$( date +%Y-%m-%d_%H%M )&quot;
+export BUILD_DATE_RECV=&quot;$( date +%Y%m%d )&quot;
+
+
+#RECOVERY_FILES=$(find &quot;/mnt/android/output-multirom/omni/target/product/&quot; -maxdepth 2 -name &quot;recovery.img&quot; -print)
+#MROM_ZIPS=$(find &quot;/mnt/android/output-multirom/omni/target/product/&quot; -maxdepth 2 -name &quot;multirom.zip&quot; -print)
+# Deprecated: would allow to publish for all devices
+#DEVICES=$(ls -1 &quot;${PRODUCT_DIR}/&quot;)
+
+# Fetch mrom-repos to create the changelogs
+if [ ! -d &quot;${TOOLS_DIR}/tmp&quot; ]; then
+    mkdir &quot;${TOOLS_DIR}/tmp&quot;
+fi
+cd &quot;${TOOLS_DIR}/tmp&quot;
+rm -rf &quot;${TOOLS_DIR}/tmp/&quot;*
+
+#git clone https://github.com/XperiaMultiRom/Team-Win-Recovery-Project.git recovery
+#git clone https://github.com/XperiaMultiRom/multirom.git multirom
+cd
+
+
+device_out_dir=&quot;${PRODUCT_DIR}/${DEVICE}&quot;
+device_pub_dir=&quot;${PUB_DIR}/${DEVICE}&quot;
+# For stable build publish to the main dir.
+if [ ${STAGE} != &quot;stable&quot; ]; then
+	device_pub_dir=&quot;${device_pub_dir}/${STAGE}&quot;
+    mkdir -p &quot;${device_pub_dir}&quot;
+fi
+
+    
+# Validate whether all needed files were generated.
+if [ -f &quot;${device_out_dir}/recovery.img&quot; ] &amp;&amp; [ -f &quot;${device_out_dir}/multirom.zip&quot; ] &amp;&amp; [ -f &quot;${device_out_dir}/multirom_uninstaller.zip&quot; ]; then
+	
+	if [ &quot;$(ls -A &quot;${device_pub_dir}&quot;)&quot; ]; then
+  		# Remove old json manifest
+    	if [ -f &quot;${device_pub_dir}/manifest.json&quot; ]; then
+   			rm &quot;${device_pub_dir}/manifest.json&quot;
+    	fi
+
+		# Handling of previous releases
+		# Only needed for stable builds
+		if [ ${STAGE} = &quot;stable&quot; ]; then
+			prev_date=&quot;&quot;
+	  		# Move old ones to the Archive.
+			if [ ! -d &quot;${device_pub_dir}/ARCHIVE&quot; ]; then
+	   			mkdir &quot;${device_pub_dir}/ARCHIVE&quot;
+            fi
+	    	prev_date=$( ls &quot;${device_pub_dir}&quot;/recovery*.img | sed &apos;s/\(.*\)recovery-\(.*\)_\(.*\).img/\2/&apos; )
+	   		mv &quot;${device_pub_dir}/changelog-multirom.txt&quot; &quot;${device_pub_dir}/ARCHIVE/changelog-multirom-${prev_date}.txt&quot;
+	    	mv &quot;${device_pub_dir}/changelog-recovery.txt&quot; &quot;${device_pub_dir}/ARCHIVE/changelog-recovery-${prev_date}.txt&quot;
+	    	mv &quot;${device_pub_dir}&quot;/multirom* &quot;${device_pub_dir}/ARCHIVE&quot;
+	    	mv &quot;${device_pub_dir}&quot;/recovery* &quot;${device_pub_dir}/ARCHIVE&quot;
+		fi
+        
+        # For non-stable builds: clean the entire publication directory.
+        if [ ${STAGE} != &quot;stable&quot; ]; then
+            rm &quot;${device_pub_dir}/&quot;*
+        fi
+        
+    fi
+        
+	# Copy the new files &amp; generate checksum.
+	cp &quot;${device_out_dir}/recovery.img&quot; &quot;${device_pub_dir}/recovery-${BUILD_DATE}.img&quot;
+	cp &quot;${device_out_dir}/multirom.zip&quot; &quot;${device_pub_dir}/multirom-${BUILD_DATE}.zip&quot;
+	cp &quot;${device_out_dir}/multirom_uninstaller.zip&quot; &quot;${device_pub_dir}/multirom_uninstaller-${BUILD_DATE}.zip&quot;
+	LD_PRELOAD=&quot;/mnt/android/tools/libc++.so&quot; &quot;/mnt/android/tools/bbootimg&quot; -u &quot;${device_pub_dir}/recovery-${BUILD_DATE}.img&quot;  -c &quot;name=mrom${BUILD_DATE_RECV}-00&quot;
+    md5sum &quot;${device_pub_dir}/recovery-${BUILD_DATE}.img&quot; &gt; &quot;recovery-${BUILD_DATE}.img.md5&quot;
+    md5sum &quot;${device_pub_dir}/multirom-${BUILD_DATE}.zip&quot; &gt; &quot;multirom-${BUILD_DATE}.zip.md5&quot;
+         
+	# Generate the changelogs
+    if [ ${STAGE} = &quot;stable&quot; ]; then
+		cd &quot;/mnt/android/omni_mrom/system/extras/multirom&quot;
+		git log --pretty=format:&quot;- %s%n%b&quot; &gt; &quot;${device_pub_dir}/changelog-multirom-${BUILD_DATE}.txt&quot;
+		cd &quot;/mnt/android/omni_mrom/bootable/recovery&quot;
+		git log --pretty=format:&quot;- %s%n%b&quot; &gt; &quot;${device_pub_dir}/changelog-recovery-${BUILD_DATE}.txt&quot;
+		cd
+    fi
+    
+    # Create static links for the changelogs
+    ln -s -f &quot;${device_pub_dir}/changelog-multirom-${BUILD_DATE}.txt&quot; &quot;${device_pub_dir}/changelog-multirom.txt&quot;
+    ln -s -f &quot;${device_pub_dir}/changelog-recovery-${BUILD_DATE}.txt&quot; &quot;${device_pub_dir}/changelog-recovery.txt&quot;
+        
+	# Create &amp; move the json manifest file.
+    if [ ${STAGE} = &quot;stable&quot; ]; then
+		&quot;${TOOLS_DIR}/create-mrom-manifest.sh&quot; &quot;${TOOLS_DIR}/manifest.json&quot; &quot;${DEVICE}&quot; &quot;&quot; &quot;${BUILD_DATE}&quot; /mnt/home/files/public/MultiRom/&quot;${DEVICE}&quot; &quot;${VERSION_MULTIROM}${VERSION_MULTIROM_DEVICE}&quot;
+    else
+	    &quot;${TOOLS_DIR}/create-mrom-manifest.sh&quot; &quot;${TOOLS_DIR}/manifest.json&quot; &quot;${DEVICE}&quot; &quot;/${STAGE}&quot; &quot;${BUILD_DATE}&quot; /mnt/home/files/public/MultiRom/&quot;${DEVICE}&quot;/&quot;${STAGE}&quot; &quot;${VERSION_MULTIROM}${VERSION_MULTIROM_DEVICE}&quot;
+	fi
+	mv manifest-tmp.json &quot;${device_pub_dir}/manifest.json&quot;
+    
+        
+        #if [ $prev_date ]; then
+        # WARNING: block is a fragment: incomplete and not tested.
+        #    # Diff between old and new changelog
+        #    diff &quot;${device_pub_dir}/ARCHIVE/changelog-multirom-${prev_date}.txt&quot; &quot;${TOOLS_DIR}/tmp/changelog-multirom-new.txt&quot; &gt; &quot;${TOOLS_DIR}/tmp/changelog-multirom.diff&quot;
+        #    diff &quot;${device_pub_dir}/ARCHIVE/changelog-recovery-${prev_date}.txt&quot; &quot;${TOOLS_DIR}/tmp/changelog-recovery-new.txt&quot; &gt; &quot;${TOOLS_DIR}/tmp/changelog-recovery.diff&quot;
+        #else
+        #	echo &quot;Generating new changelog for ${device}.&quot;
+        #	cd &quot;${TOOLS_DIR}/tmp/multirom&quot;
+        #	git log --pretty=format:&quot;- %s%n%b&quot; &gt; &quot;${device_pub_dir}/changelog-multirom-${BUILD_DATE}.txt&quot;
+        #	cd &quot;${TOOLS_DIR}/tmp/recovery&quot;
+        #	git log --pretty=format:&quot;- %s%n%b&quot; &gt; &quot;${device_pub_dir}/changelog-recovery-${BUILD_DATE}.txt&quot;
+        #	cd
+        #fi
+fi
+
+
+rm -rf &quot;${TOOLS_DIR}/tmp/*&quot;
+</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+</project>
