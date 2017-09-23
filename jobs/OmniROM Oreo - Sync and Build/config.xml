@@ -86,20 +86,20 @@ repo sync
 
 ### Apply omni changes from gerrit
 for topic in OMNI_PICK_TOPICS; do
-	repopick -t topic
+	repopick -t &quot;${topic}&quot;
 done
 
 for num in OMNI_PICK_NUMBER; do
-	repopick -t num
+	repopick -t $num
 done
 
 ### Apply choose-a changes from gerrit
 for topic in OMNI_PICK_TOPICS; do
-	~/home/tools/repopickc.py -t topic
+	~/home/tools/repopickc.py -t &quot;${topic}&quot;
 done
 
 for num in OMNI_PICK_NUMBER; do
-	~/home/tools/repopickc.py number
+	~/home/tools/repopickc.py $num
 done
 
 ../tools/buildomni.sh ${DEVICE} &quot;&quot; ${ROM_BUILDTYPE}
