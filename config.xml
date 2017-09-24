@@ -78,6 +78,7 @@
         <string>OmniRom - Publish</string>
         <string>OmniROM Oreo - Build</string>
         <string>OmniROM Oreo - Command</string>
+        <string>OmniROM Oreo - Publish</string>
       </jobNames>
       <jobFilters/>
       <columns>
