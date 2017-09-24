@@ -37,12 +37,13 @@
   <disabled>false</disabled>
   <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <jdk>(System)</jdk>
   <triggers/>
   <concurrentBuild>false</concurrentBuild>
   <builders>
     <hudson.tasks.Shell>
       <command>export PUB_DIR=&quot;/mnt/home/files/public/OmniRom&quot;
-export PRODUCT_DIR=&quot;/mnt/android/output_omni/omni/target/product&quot;
+export PRODUCT_DIR=&quot;/mnt/android/output/omnio/target/product&quot;
 export BUILD_DATE=&quot;$( date +%Y-%m-%d_%H%M )&quot;
 
 mkdir -p &quot;${PUB_DIR}/${DEVICE}/${BUILD_TYPE}&quot;
