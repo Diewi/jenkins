@@ -6,61 +6,62 @@
   <properties>
     <hudson.model.ParametersDefinitionProperty>
       <parameterDefinitions>
-        <hudson.model.ChoiceParameterDefinition>
+        <com.gem.persistentparameter.PersistentChoiceParameterDefinition plugin="persistent-parameter@1.1">
           <name>DEVICE</name>
           <description></description>
-          <choices class="java.util.Arrays$ArrayList">
-            <a class="string-array">
-              <string>sirius</string>
-              <string>leo</string>
-              <string>castor</string>
-              <string>castor_windy</string>
-              <string>honami</string>
-            </a>
+          <choices>
+            <string>sirius</string>
+            <string>leo</string>
+            <string>castor</string>
+            <string>castor_windy</string>
+            <string>honami</string>
           </choices>
-        </hudson.model.ChoiceParameterDefinition>
-        <hudson.model.ChoiceParameterDefinition>
+          <successfulOnly>false</successfulOnly>
+        </com.gem.persistentparameter.PersistentChoiceParameterDefinition>
+        <com.gem.persistentparameter.PersistentChoiceParameterDefinition plugin="persistent-parameter@1.1">
           <name>TYPE</name>
           <description></description>
-          <choices class="java.util.Arrays$ArrayList">
-            <a class="string-array">
-              <string>none</string>
-              <string>-eng</string>
-              <string>-userdebug</string>
-            </a>
+          <choices>
+            <string>-eng</string>
+            <string>-userdebug</string>
+            <string>-user</string>
           </choices>
-        </hudson.model.ChoiceParameterDefinition>
-        <hudson.model.ChoiceParameterDefinition>
+          <successfulOnly>false</successfulOnly>
+        </com.gem.persistentparameter.PersistentChoiceParameterDefinition>
+        <com.gem.persistentparameter.PersistentChoiceParameterDefinition plugin="persistent-parameter@1.1">
           <name>ROM_BUILDTYPE</name>
           <description></description>
-          <choices class="java.util.Arrays$ArrayList">
-            <a class="string-array">
-              <string>HOMEMADE</string>
-              <string>NIGHTLY</string>
-              <string>WEEKLY</string>
-            </a>
+          <choices>
+            <string>HOMEMADE</string>
+            <string>NIGHTLY</string>
+            <string>WEEKLY</string>
           </choices>
-        </hudson.model.ChoiceParameterDefinition>
-        <hudson.model.StringParameterDefinition>
+          <successfulOnly>false</successfulOnly>
+        </com.gem.persistentparameter.PersistentChoiceParameterDefinition>
+        <com.gem.persistentparameter.PersistentTextParameterDefinition plugin="persistent-parameter@1.1">
           <name>OMNI_PICK_TOPICS</name>
           <description>Topics to pick (omni gerrit)</description>
           <defaultValue></defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
+          <successfulOnly>false</successfulOnly>
+        </com.gem.persistentparameter.PersistentTextParameterDefinition>
+        <com.gem.persistentparameter.PersistentTextParameterDefinition plugin="persistent-parameter@1.1">
           <name>CHOOSEA_PICK_TOPICS</name>
           <description>Topics to pick (choose-a gerrit)</description>
           <defaultValue></defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
+          <successfulOnly>false</successfulOnly>
+        </com.gem.persistentparameter.PersistentTextParameterDefinition>
+        <com.gem.persistentparameter.PersistentTextParameterDefinition plugin="persistent-parameter@1.1">
           <name>OMNI_PICK_NUMBER</name>
           <description>IDs to pick from omni gerrit.</description>
           <defaultValue></defaultValue>
-        </hudson.model.StringParameterDefinition>
-        <hudson.model.StringParameterDefinition>
+          <successfulOnly>false</successfulOnly>
+        </com.gem.persistentparameter.PersistentTextParameterDefinition>
+        <com.gem.persistentparameter.PersistentTextParameterDefinition plugin="persistent-parameter@1.1">
           <name>CHOOSEA_PICK_NUMBER</name>
           <description>IDs to pick from choose-a gerrit.</description>
           <defaultValue></defaultValue>
-        </hudson.model.StringParameterDefinition>
+          <successfulOnly>false</successfulOnly>
+        </com.gem.persistentparameter.PersistentTextParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
