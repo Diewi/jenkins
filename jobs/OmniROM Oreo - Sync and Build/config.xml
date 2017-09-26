@@ -103,7 +103,7 @@ for num in $CHOOSEA_PICK_NUMBER; do
 	~/home/tools/repopickc.py $num
 done
 
-../tools/buildomni.sh ${DEVICE} &quot;&quot; ${ROM_BUILDTYPE}
+~/home/tools/buildomni.sh ${DEVICE} &quot;&quot; ${ROM_BUILDTYPE}
 </command>
     </hudson.tasks.Shell>
   </builders>
