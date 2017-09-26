@@ -102,15 +102,15 @@ done
 
 ### Apply choose-a changes from gerrit
 for topic in $CHOOSEA_PICK_TOPICS; do
-	~/home/tools/repopickc.py -g &quot;ssh://review.choose-a.name:29418&quot; -t &quot;${topic}&quot;
+	~/home/tools/repopick.py -g &quot;ssh://review.choose-a.name:29418&quot; -t &quot;${topic}&quot;
 done
 
 for num in $CHOOSEA_PICK_NUMBER; do
-	~/home/tools/repopickc.py -g &quot;ssh://review.choose-a.name:29418&quot; -f $num
+	~/home/tools/repopick.py -g &quot;ssh://review.choose-a.name:29418&quot; -f $num
 done
 
 for num in $LINEAGE_PICK_NUMBER; do
-	~/home/tools/repopickl.py -g &quot;ssh://review.lineageos.org:29418&quot; -f $num
+	~/home/tools/repopick.py -g &quot;ssh://review.lineageos.org:29418&quot; -f $num
 done
 
 ~/home/tools/buildomni.sh ${DEVICE} &quot;&quot; ${ROM_BUILDTYPE}
