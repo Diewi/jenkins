@@ -62,6 +62,12 @@
           <defaultValue></defaultValue>
           <successfulOnly>false</successfulOnly>
         </com.gem.persistentparameter.PersistentTextParameterDefinition>
+        <com.gem.persistentparameter.PersistentTextParameterDefinition plugin="persistent-parameter@1.1">
+          <name>LINEAGE_PICK_NUMBER</name>
+          <description>IDs to pick from lineage&apos;s gerrit.</description>
+          <defaultValue></defaultValue>
+          <successfulOnly>false</successfulOnly>
+        </com.gem.persistentparameter.PersistentTextParameterDefinition>
       </parameterDefinitions>
     </hudson.model.ParametersDefinitionProperty>
   </properties>
@@ -101,6 +107,10 @@ done
 
 for num in $CHOOSEA_PICK_NUMBER; do
 	~/home/tools/repopickc.py $num
+done
+
+for num in $LINEAGE_PICK_NUMBER; do
+	~/home/tools/repopickl.py $num
 done
 
 ~/home/tools/buildomni.sh ${DEVICE} &quot;&quot; ${ROM_BUILDTYPE}
