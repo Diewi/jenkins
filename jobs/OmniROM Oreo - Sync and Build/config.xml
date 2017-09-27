@@ -110,7 +110,7 @@ for num in $CHOOSEA_PICK_NUMBER; do
 done
 
 for num in $LINEAGE_PICK_NUMBER; do
-	~/home/tools/repopick.py -g &quot;https://review.lineageos.org&quot; -f $num
+	~/home/tools/repopick.py -g &quot;https://review.lineageos.org&quot; -u &apos;LineageOS/&apos; -f $num 
 done
 
 ~/home/tools/buildomni.sh ${DEVICE} &quot;&quot; ${ROM_BUILDTYPE}
