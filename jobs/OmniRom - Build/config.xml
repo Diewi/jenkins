@@ -58,7 +58,7 @@
 	TYPE=&quot;&quot;
 fi
 
-../buildomni.sh ${DEVICE} &quot;&quot; ${ROM_BUILDTYPE}
+~/home/tools/buildomni.sh &quot;/mnt/android/omni&quot; ${DEVICE} &quot;&quot; ${ROM_BUILDTYPE}
 </command>
     </hudson.tasks.Shell>
   </builders>
