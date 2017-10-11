@@ -61,9 +61,7 @@ fi
 ##
 
 
-cd /mnt/android/omni
-
-./buildomni.sh ${DEVICE} ${TYPE} &quot;HOMEMADE&quot; ${BUILD_CMD}
+~/home/tools/buildomni.sh &quot;/mnt/android/omni&quot; ${DEVICE} ${TYPE} &quot;HOMEMADE&quot; ${BUILD_CMD}
 </command>
     </hudson.tasks.Shell>
   </builders>
