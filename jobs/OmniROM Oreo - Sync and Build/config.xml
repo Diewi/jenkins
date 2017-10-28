@@ -101,7 +101,7 @@ for num in $LINEAGE_PICK_NUMBER; do
 	~/home/tools/repopick.py -g &quot;https://review.lineageos.org&quot; -u &apos;LineageOS/&apos; -f $num 
 done
 
-~/home/tools/buildomni.sh ${DEVICE} &quot;&quot; ${ROM_BUILDTYPE}
+~/home/tools/buildomni.sh &quot;/mnt/android/omnio&quot; ${DEVICE} &quot;${TYPE}&quot; ${ROM_BUILDTYPE}
 </command>
     </hudson.tasks.Shell>
   </builders>
