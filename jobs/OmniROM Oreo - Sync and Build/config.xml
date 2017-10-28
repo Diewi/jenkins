@@ -10,7 +10,7 @@
           <name>DEVICE</name>
           <description></description>
           <choices>
-            <string>sirius</string>
+            <string>z2</string>
             <string>leo</string>
             <string>castor</string>
             <string>castor_windy</string>
@@ -45,20 +45,8 @@
           <successfulOnly>false</successfulOnly>
         </com.gem.persistentparameter.PersistentTextParameterDefinition>
         <com.gem.persistentparameter.PersistentTextParameterDefinition plugin="persistent-parameter@1.1">
-          <name>CHOOSEA_PICK_TOPICS</name>
-          <description>Topics to pick (choose-a gerrit)</description>
-          <defaultValue></defaultValue>
-          <successfulOnly>false</successfulOnly>
-        </com.gem.persistentparameter.PersistentTextParameterDefinition>
-        <com.gem.persistentparameter.PersistentTextParameterDefinition plugin="persistent-parameter@1.1">
           <name>OMNI_PICK_NUMBER</name>
           <description>IDs to pick from omni gerrit.</description>
-          <defaultValue></defaultValue>
-          <successfulOnly>false</successfulOnly>
-        </com.gem.persistentparameter.PersistentTextParameterDefinition>
-        <com.gem.persistentparameter.PersistentTextParameterDefinition plugin="persistent-parameter@1.1">
-          <name>CHOOSEA_PICK_NUMBER</name>
-          <description>IDs to pick from choose-a gerrit.</description>
           <defaultValue></defaultValue>
           <successfulOnly>false</successfulOnly>
         </com.gem.persistentparameter.PersistentTextParameterDefinition>
