@@ -76,6 +76,10 @@ fi
 cd /mnt/android/omnio/
 . build/envsetup.sh
 
+export JACK_SERVER_VM_ARGUMENTS=&quot;-Dfile.encoding=UTF-8 -XX:+TieredCompilation -Xmx4g&quot;
+./prebuilts/sdk/tools/jack-admin kill-server
+./prebuilts/sdk/tools/jack-admin start-server
+
 ### Sync
 repo sync
 
