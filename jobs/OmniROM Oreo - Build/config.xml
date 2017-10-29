@@ -60,13 +60,13 @@ fi
 
 cd /mnt/android/omnio
 
-export USER=jenkins
-source ./build/envsetup.sh
+#export USER=jenkins
+#source ./build/envsetup.sh
 
-export JACK_SERVER_VM_ARGUMENTS=&quot;-Dfile.encoding=UTF-8 -XX:+TieredCompilation -Xmx4g&quot;
-export ANDROID_JACK_VM_ARGS=&quot;$JACK_SERVER_VM_ARGUMENTS&quot;
-./prebuilts/sdk/tools/jack-admin kill-server || true
-./prebuilts/sdk/tools/jack-admin start-server
+#export JACK_SERVER_VM_ARGUMENTS=&quot;-Dfile.encoding=UTF-8 -XX:+TieredCompilation -Xmx4g&quot;
+#export ANDROID_JACK_VM_ARGS=&quot;$JACK_SERVER_VM_ARGUMENTS&quot;
+#./prebuilts/sdk/tools/jack-admin kill-server || true
+#./prebuilts/sdk/tools/jack-admin start-server
 
 ~/home/tools/buildomni.sh &quot;/mnt/android/omnio&quot; ${DEVICE} &quot;&quot; ${ROM_BUILDTYPE}
 </command>
