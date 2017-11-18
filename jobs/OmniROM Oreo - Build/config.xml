@@ -16,6 +16,7 @@
               <string>castor</string>
               <string>castor_windy</string>
               <string>honami</string>
+              <string>find7op</string>
             </a>
           </choices>
         </hudson.model.ChoiceParameterDefinition>
