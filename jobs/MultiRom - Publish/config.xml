@@ -55,6 +55,7 @@
       <command>export PUB_DIR=&quot;/mnt/home/files/public/MultiRom&quot;
 export PRODUCT_DIR=&quot;/mnt/android/output/omni_mrom/target/product&quot;
 export TOOLS_DIR=&quot;/mnt/android/multirom&quot;
+export MROM_DIR=&quot;/mnt/android/omni_mrom&quot;
 export BUILD_DATE=&quot;$( date +%Y-%m-%d_%H%M )&quot;
 export BUILD_DATE_RECV=&quot;$( date +%Y%m%d )&quot;
 
@@ -103,8 +104,8 @@ if [ -f &quot;${device_out_dir}/recovery.img&quot; ] &amp;&amp; [ -f &quot;${dev
 	   			mkdir &quot;${device_pub_dir}/ARCHIVE&quot;
             fi
 	    	prev_date=$( ls &quot;${device_pub_dir}&quot;/recovery*.img | sed &apos;s/\(.*\)recovery-\(.*\)_\(.*\).img/\2/&apos; )
-	   		mv &quot;${device_pub_dir}/changelog-multirom.txt&quot; &quot;${device_pub_dir}/ARCHIVE/changelog-multirom-${prev_date}.txt&quot;
-	    	mv &quot;${device_pub_dir}/changelog-recovery.txt&quot; &quot;${device_pub_dir}/ARCHIVE/changelog-recovery-${prev_date}.txt&quot;
+	   		mv &quot;${device_pub_dir}/changelog-multirom-${prev_date}.txt&quot; &quot;${device_pub_dir}/ARCHIVE/changelog-multirom-${prev_date}.txt&quot;
+	    	mv &quot;${device_pub_dir}/changelog-recovery-${prev_date}.txt&quot; &quot;${device_pub_dir}/ARCHIVE/changelog-recovery-${prev_date}.txt&quot;
 	    	mv &quot;${device_pub_dir}&quot;/multirom* &quot;${device_pub_dir}/ARCHIVE&quot;
 	    	mv &quot;${device_pub_dir}&quot;/recovery* &quot;${device_pub_dir}/ARCHIVE&quot;
 		fi
@@ -144,21 +145,8 @@ if [ -f &quot;${device_out_dir}/recovery.img&quot; ] &amp;&amp; [ -f &quot;${dev
 	    &quot;${TOOLS_DIR}/create-mrom-manifest.sh&quot; &quot;${TOOLS_DIR}/manifest.json&quot; &quot;${DEVICE}&quot; &quot;/${STAGE}&quot; &quot;${BUILD_DATE}&quot; /mnt/home/files/public/MultiRom/&quot;${DEVICE}&quot;/&quot;${STAGE}&quot; &quot;${VERSION_MULTIROM}${VERSION_MULTIROM_DEVICE}&quot;
 	fi
 	mv manifest-tmp.json &quot;${device_pub_dir}/manifest.json&quot;
-    
         
-        #if [ $prev_date ]; then
-        # WARNING: block is a fragment: incomplete and not tested.
-        #    # Diff between old and new changelog
-        #    diff &quot;${device_pub_dir}/ARCHIVE/changelog-multirom-${prev_date}.txt&quot; &quot;${TOOLS_DIR}/tmp/changelog-multirom-new.txt&quot; &gt; &quot;${TOOLS_DIR}/tmp/changelog-multirom.diff&quot;
-        #    diff &quot;${device_pub_dir}/ARCHIVE/changelog-recovery-${prev_date}.txt&quot; &quot;${TOOLS_DIR}/tmp/changelog-recovery-new.txt&quot; &gt; &quot;${TOOLS_DIR}/tmp/changelog-recovery.diff&quot;
-        #else
-        #	echo &quot;Generating new changelog for ${device}.&quot;
-        #	cd &quot;${TOOLS_DIR}/tmp/multirom&quot;
-        #	git log --pretty=format:&quot;- %s%n%b&quot; &gt; &quot;${device_pub_dir}/changelog-multirom-${BUILD_DATE}.txt&quot;
-        #	cd &quot;${TOOLS_DIR}/tmp/recovery&quot;
-        #	git log --pretty=format:&quot;- %s%n%b&quot; &gt; &quot;${device_pub_dir}/changelog-recovery-${BUILD_DATE}.txt&quot;
-        #	cd
-        #fi
+        
 fi
 
 
