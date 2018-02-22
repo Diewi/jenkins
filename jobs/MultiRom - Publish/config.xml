@@ -121,7 +121,7 @@ if [ -f &quot;${device_out_dir}/recovery.img&quot; ] &amp;&amp; [ -f &quot;${dev
 	cp &quot;${device_out_dir}/recovery.img&quot; &quot;${device_pub_dir}/recovery-${BUILD_DATE}.img&quot;
 	cp &quot;${device_out_dir}/multirom.zip&quot; &quot;${device_pub_dir}/multirom-${BUILD_DATE}.zip&quot;
 	cp &quot;${device_out_dir}/multirom_uninstaller.zip&quot; &quot;${device_pub_dir}/multirom_uninstaller-${BUILD_DATE}.zip&quot;
-	LD_PRELOAD=&quot;/mnt/android/tools/libc++.so&quot; &quot;/mnt/android/tools/bbootimg&quot; -u &quot;${device_pub_dir}/recovery-${BUILD_DATE}.img&quot;  -c &quot;name=mrom${BUILD_DATE_RECV}-00&quot;
+	LD_PRELOAD=&quot;/mnt/android/tools/libc++.so&quot; &quot;${TOOLS_DIR}/bbootimg&quot; -u &quot;${device_pub_dir}/recovery-${BUILD_DATE}.img&quot;  -c &quot;name=mrom${BUILD_DATE_RECV}-00&quot;
     md5sum &quot;${device_pub_dir}/recovery-${BUILD_DATE}.img&quot; &gt; &quot;recovery-${BUILD_DATE}.img.md5&quot;
     md5sum &quot;${device_pub_dir}/multirom-${BUILD_DATE}.zip&quot; &gt; &quot;multirom-${BUILD_DATE}.zip.md5&quot;
          
